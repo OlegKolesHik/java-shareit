@@ -4,22 +4,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Stream;
+import java.util.*;
 
 @Slf4j
 @Repository
-public class ItemImpl implements ItemRepository {
-    private final HashMap<Long, Item> items = new HashMap<>();
-    private final HashMap<Long, Set<Long>> userItems = new HashMap<>();
+public class ItemImpl implements ItemRepositoryImp {
+    public final HashMap<Long, Item> items = new HashMap<>();
+    public final HashMap<Long, Set<Long>> userItems = new HashMap<>();
 
-    private long count;
+
 
     @Override
-    public Stream<Item> findAll() {
-        return items.values().stream();
+    public Collection<Item> findAll() {
+        return items.values();
     }
 
     @Override
@@ -29,19 +26,6 @@ public class ItemImpl implements ItemRepository {
 
     @Override
     public Item add(Item item, long userId) {
-        Set<Long> savedUserItems;
-        if (userItems.get(userId) != null) {
-            savedUserItems = userItems.get(userId);
-        } else {
-            savedUserItems = new HashSet<>();
-        }
-        if (item.getId() == 0) {
-            item.setId(++count);
-        }
-        items.put(item.getId(), item);
-
-        savedUserItems.add(item.getId());
-        userItems.put(userId, savedUserItems);
         return items.get(item.getId());
     }
 

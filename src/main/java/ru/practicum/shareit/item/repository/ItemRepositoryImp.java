@@ -2,12 +2,13 @@ package ru.practicum.shareit.item.repository;
 
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public interface ItemRepository {
+public interface ItemRepositoryImp {
 
-    Stream<Item> findAll();
+    Collection<Item> findAll();
 
     Item getById(long itemId);
 

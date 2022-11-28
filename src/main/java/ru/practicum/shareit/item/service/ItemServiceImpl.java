@@ -6,23 +6,41 @@ import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.repository.ItemImpl;
+import ru.practicum.shareit.item.repository.ItemRepositoryImp;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private final ItemRepository itemRepository;
+    private final ItemRepositoryImp itemRepository;
     private final UserService userService;
+    private long count;
+    private final ItemImpl itemImpl;
 
     @Override
     public ItemDto addItem(Item item, long userId) {
         if (userService.getUserById(userId) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
+        Set<Long> savedUserItems;
+        if (itemImpl.userItems.get(userId) != null) {
+            savedUserItems = itemImpl.userItems.get(userId);
+        } else {
+            savedUserItems = new HashSet<>();
+        }
+        if (item.getId() == 0) {
+            item.setId(++count);
+        }
+        itemImpl.items.put(item.getId(), item);
+
+        savedUserItems.add(item.getId());
+        itemImpl.userItems.put(userId, savedUserItems);
+
         return ItemMapper.mapping(itemRepository.add(item, userId));
     }
 
@@ -63,9 +81,9 @@ public class ItemServiceImpl implements ItemService {
             return Stream.empty();
         }
         Stream<Item> findByName = itemRepository.findAll()
-                .filter((Item item) -> item.getName().toLowerCase().contains(text.toLowerCase()));
+                .stream().filter((Item item) -> item.getName().toLowerCase().contains(text.toLowerCase()));
         Stream<Item> findByDescription = itemRepository.findAll()
-                .filter((Item item) -> item.getDescription().toLowerCase().contains(text.toLowerCase()));
+                .stream().filter((Item item) -> item.getDescription().toLowerCase().contains(text.toLowerCase()));
         return Stream.concat(findByDescription, findByName)
                 .distinct()
                 .filter(Item::getAvailable)
@@ -85,7 +103,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private Stream<ItemDto> getAllItems() {
-        return itemRepository.findAll().map(ItemMapper::mapping);
+        return itemRepository.findAll().stream().map(ItemMapper::mapping);
     }
 
     private Stream<ItemDto> getItemByUser(long userId) {
