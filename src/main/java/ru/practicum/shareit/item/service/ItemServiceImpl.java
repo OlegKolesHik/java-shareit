@@ -23,7 +23,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemImpl itemImpl;
 
     @Override
-    public ItemDto addItem(Item item, long userId) {
+    public ItemDto addItem(ItemDto item, long userId) {
         if (userService.getUserById(userId) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
@@ -45,8 +45,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(Item updatedItem, long itemId, long userId) {
-        Item item = itemRepository.getById(itemId);
+    public ItemDto updateItem(ItemDto updatedItem, long itemId, long userId) {
+        ItemDto item = itemRepository.getById(itemId);
         Set<Long> userItems = itemRepository.getUserItems(userId);
         if (userItems == null || !userItems.contains(itemId)) {
             throw new NotFoundException("Предмет не найден");
@@ -80,13 +80,13 @@ public class ItemServiceImpl implements ItemService {
         if (text.isEmpty()) {
             return Stream.empty();
         }
-        Stream<Item> findByName = itemRepository.findAll()
-                .stream().filter((Item item) -> item.getName().toLowerCase().contains(text.toLowerCase()));
-        Stream<Item> findByDescription = itemRepository.findAll()
-                .stream().filter((Item item) -> item.getDescription().toLowerCase().contains(text.toLowerCase()));
+        Stream<ItemDto> findByName = itemRepository.findAll()
+                .stream().filter((ItemDto item) -> item.getName().toLowerCase().contains(text.toLowerCase()));
+        Stream<ItemDto> findByDescription = itemRepository.findAll()
+                .stream().filter((ItemDto item) -> item.getDescription().toLowerCase().contains(text.toLowerCase()));
         return Stream.concat(findByDescription, findByName)
                 .distinct()
-                .filter(Item::getAvailable)
+                .filter(ItemDto::getAvailable)
                 .map(ItemMapper::mapping);
     }
 
