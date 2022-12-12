@@ -2,7 +2,10 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.sql.Update;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.Create;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -11,30 +14,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequiredArgsConstructor
-@Slf4j
 @RequestMapping(path = "/users")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
     @PostMapping()
-    public UserDto postUser(@Valid @RequestBody User user) {
-        return userService.addUser(user);
+    public ru.practicum.shareit.user.dto.UserDto postUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
+        return userService.addUser(userDto);
+    }
+
+    @PatchMapping("/{userId}")
+    public ru.practicum.shareit.user.dto.UserDto patchUser(@Validated({Update.class}) @PathVariable long userId,
+                                                           @RequestBody User user) {
+        return userService.updateUser(userId, user);
     }
 
     @GetMapping()
-    public List<UserDto> getAllUsers() {
+    public List<ru.practicum.shareit.user.dto.UserDto> getAllUsers() {
         return userService.getAllUsers().collect(Collectors.toList());
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUserById(@PathVariable long userId) {
+    public ru.practicum.shareit.user.dto.UserDto getUserById(@PathVariable long userId) {
         return userService.getUserById(userId);
-    }
-
-    @PatchMapping("/{userId}")
-    public UserDto patchUser(@Valid @PathVariable long userId, @RequestBody User user) {
-        return userService.updateUser(userId, user);
     }
 
     @DeleteMapping("/{userId}")
