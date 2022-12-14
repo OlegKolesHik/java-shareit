@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.Data;
 import ru.practicum.shareit.item.model.Item;
 
 public class ItemMapper {
