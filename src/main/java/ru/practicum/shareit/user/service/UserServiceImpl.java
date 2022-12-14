@@ -2,21 +2,17 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ConflictException;
-import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.EntityNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -35,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(long userId, User updatedUser) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            throw new NotFoundException("Пользователь не найден");
+            throw new EntityNotFoundException("Пользователь не найден");
         }
         User user = userOptional.get();
         if (updatedUser.getName() != null) {
@@ -44,6 +40,7 @@ public class UserServiceImpl implements UserService {
         if (updatedUser.getEmail() != null) {
             user.setEmail(updatedUser.getEmail());
         }
+
         return UserMapper.toUserDto(userRepository.save(user));
     }
 
@@ -51,7 +48,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            throw new NotFoundException("Пользователь не найден");
+            throw new EntityNotFoundException("Пользователь не найден");
         }
         return UserMapper.toUserDto(userOptional.get());
     }
@@ -65,7 +62,7 @@ public class UserServiceImpl implements UserService {
     public Set<Item> getUserItems(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException("Пользователь не найден");
+            throw new EntityNotFoundException("Пользователь не найден");
         }
         return optionalUser.get().getUserItems();
     }
@@ -73,8 +70,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(long userId) {
         if (userRepository.findById(userId).isEmpty()) {
-            throw new NotFoundException("Пользователь не найден");
+            throw new EntityNotFoundException("Пользователь не найден");
         }
         userRepository.deleteById(userId);
     }
+
+
 }

@@ -6,7 +6,7 @@ import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingMapper;
-import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.EntityNotFoundException;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentMapper;
@@ -18,9 +18,11 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addItem(ItemDto itemDto, long userId) {
         Item item = ItemMapper.toItem(itemDto);
         if (userService.getUserById(userId) == null) {
-            throw new NotFoundException("Пользователь не найден");
+            throw new EntityNotFoundException("Пользователь не найден");
         }
         item.setUserId(userId);
         return ItemMapper.toItemDto(itemRepository.save(item));
@@ -50,10 +52,10 @@ public class ItemServiceImpl implements ItemService {
                 .map(Item::getId)
                 .collect(Collectors.toSet());
         if (userItems.isEmpty() || !userItems.contains(itemId)) {
-            throw new NotFoundException("Предмет отсутсвует у данного пользователя");
+            throw new EntityNotFoundException("Предмет отсутсвует у данного пользователя");
         }
         if (optionalItem.isEmpty()) {
-            throw new NotFoundException("Товар не найден");
+            throw new EntityNotFoundException("Товар не найден");
         }
         Item item = optionalItem.get();
         if (updatedItem.getName() != null) {
@@ -73,7 +75,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getById(Long itemId, Long userId) {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) {
-            throw new NotFoundException("Предмет не найден");
+            throw new EntityNotFoundException("Предмет не найден");
         }
         ItemDto itemDto = ItemMapper.toItemDto(optionalItem.get());
         itemDto.setComments(commentRepository.findCommentsByItemOrderByCreatedDesc(optionalItem.get())
@@ -91,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
     public Item getItemById(Long itemId) {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) {
-            throw new NotFoundException("Предмет не найден");
+            throw new EntityNotFoundException("Предмет не найден");
         }
         return optionalItem.get();
     }
@@ -115,7 +117,7 @@ public class ItemServiceImpl implements ItemService {
             return getAllItems();
         } else {
             if (userService.getUserById(userId) == null) {
-                throw new NotFoundException("Пользователь не найден");
+                throw new EntityNotFoundException("Пользователь не найден");
             }
             return getItemByUser(userId);
         }

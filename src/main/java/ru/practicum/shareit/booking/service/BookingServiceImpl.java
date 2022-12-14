@@ -8,8 +8,8 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
-import ru.practicum.shareit.exceptions.NotAvailableException;
-import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.EntityNotAvailableException;
+import ru.practicum.shareit.exceptions.EntityNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -17,7 +17,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,10 +37,10 @@ public class BookingServiceImpl implements BookingService {
         validateBookingTime(bookingDto);
         Item item = itemService.getItemById(bookingDto.getItemId());
         if (!item.getAvailable()) {
-            throw new NotAvailableException("Предмет недоступен");
+            throw new EntityNotAvailableException("Предмет недоступен");
         }
         if (item.getUserId().equals(userId)) {
-            throw new NotFoundException("Невозможно забронировать свой предмет");
+            throw new EntityNotFoundException("Невозможно забронировать свой предмет");
         }
         UserDto booker = userService.getUserById(userId);
         Booking booking = BookingMapper.toBooking(bookingDto);
@@ -56,12 +55,12 @@ public class BookingServiceImpl implements BookingService {
     public BookingReturnDto patchBooking(Long bookingId, Long userId, boolean approved) {
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
         if (optionalBooking.isEmpty()) {
-            throw new NotFoundException("Бронирование не найдено");
+            throw new EntityNotFoundException("Бронирование не найдено");
         }
         Booking booking = optionalBooking.get();
         if (approved) {
             if (!booking.getItem().getUserId().equals(userId)) {
-                throw new NotFoundException("статус бронирования может менять только владелец вещи");
+                throw new EntityNotFoundException("статус бронирования может менять только владелец вещи");
             }
             if (booking.getStatus().equals(BookingStatus.APPROVED)) {
                 throw new IllegalStateException("Бронирование уже подтверждено");
@@ -78,12 +77,12 @@ public class BookingServiceImpl implements BookingService {
     public BookingReturnDto getBooking(Long bookingId, Long userId) {
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
         if (optionalBooking.isEmpty()) {
-            throw new NotFoundException("Бронирование не найдено");
+            throw new EntityNotFoundException("Бронирование не найдено");
         }
         Booking booking = optionalBooking.get();
 
         if (!booking.getItem().getUserId().equals(userId) && !booking.getBooker().getId().equals(userId)) {
-            throw new NotFoundException("Пользователь не является владельцем вещи или автором бронирования");
+            throw new EntityNotFoundException("Пользователь не является владельцем вещи или автором бронирования");
         }
         return BookingMapper.toBookingReturnDto(optionalBooking.get());
     }
@@ -120,7 +119,7 @@ public class BookingServiceImpl implements BookingService {
                         .map(BookingMapper::toBookingReturnDto)
                         .collect(Collectors.toList());
             default:
-                throw new NotAvailableException("Unknown state: UNSUPPORTED_STATUS");
+                throw new EntityNotAvailableException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 
@@ -162,7 +161,7 @@ public class BookingServiceImpl implements BookingService {
                         .map(BookingMapper::toBookingReturnDto)
                         .collect(Collectors.toList());
             default:
-                throw new NotAvailableException("Unknown state: UNSUPPORTED_STATUS");
+                throw new EntityNotAvailableException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 

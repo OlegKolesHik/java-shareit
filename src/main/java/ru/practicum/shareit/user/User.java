@@ -4,9 +4,6 @@ import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +20,7 @@ public class User {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
     @OneToMany(mappedBy = "userId")
     private final Set<Item> userItems = new HashSet<>();
