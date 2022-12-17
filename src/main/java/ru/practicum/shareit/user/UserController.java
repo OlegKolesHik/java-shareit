@@ -18,23 +18,23 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping()
-    public ru.practicum.shareit.user.dto.UserDto postUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
+    public UserDto postUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
         return userService.addUser(userDto);
     }
 
     @PatchMapping("/{userId}")
-    public ru.practicum.shareit.user.dto.UserDto patchUser(@Validated({Update.class}) @PathVariable long userId,
+    public UserDto patchUser(@Validated({Update.class}) @PathVariable long userId,
                                                            @RequestBody User user) {
         return userService.updateUser(userId, user);
     }
 
     @GetMapping()
-    public List<ru.practicum.shareit.user.dto.UserDto> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getAllUsers().collect(Collectors.toList());
     }
 
     @GetMapping("/{userId}")
-    public ru.practicum.shareit.user.dto.UserDto getUserById(@PathVariable long userId) {
+    public UserDto getUserById(@PathVariable long userId) {
         return userService.getUserById(userId);
     }
 
