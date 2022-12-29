@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 
 public class ItemRequestMapper {
 
-    private ItemRequestMapper() {
-
-    }
-
     public static ItemRequest toItemRequest(ItemRequestDto itemRequestDto) {
         ItemRequest itemRequest = new ItemRequest();
         itemRequest.setId(itemRequestDto.getId());
