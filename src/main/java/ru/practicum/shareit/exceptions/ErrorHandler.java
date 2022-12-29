@@ -11,21 +11,17 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, EntityNotAvailableException.class, IllegalStateException.class, ConstraintViolationException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class,
+            ConstraintViolationException.class, EntityNotAvailableException.class,
+            IllegalStateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse notAvailableExceptionHandler(final RuntimeException e) {
+    public ErrorResponse validationExceptionHandler(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse notFoundExceptionHandler(final EntityNotFoundException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler(EntityAlreadyExistException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse conflictExceptionHandler(final EntityAlreadyExistException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
