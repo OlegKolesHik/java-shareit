@@ -22,13 +22,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto addUser(UserDto userDto) {
+    public ru.practicum.shareit.user.dto.UserDto addUser(ru.practicum.shareit.user.dto.UserDto userDto) {
         User user = UserMapper.toUser(userDto);
         return UserMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
-    public UserDto updateUser(long userId, User updatedUser) {
+    public UserDto updateUser(long userId, UserDto updatedUserDto) {
+        User updatedUser = UserMapper.toUser(updatedUserDto);
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
             throw new EntityNotFoundException("Пользователь не найден");
@@ -40,7 +41,6 @@ public class UserServiceImpl implements UserService {
         if (updatedUser.getEmail() != null) {
             user.setEmail(updatedUser.getEmail());
         }
-
         return UserMapper.toUserDto(userRepository.save(user));
     }
 

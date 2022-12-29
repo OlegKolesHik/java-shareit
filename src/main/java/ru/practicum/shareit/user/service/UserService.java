@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 public interface UserService {
     UserDto addUser(UserDto userDto);
 
-    UserDto updateUser(long userId, User updatedUser);
+    UserDto updateUser(long userId, UserDto updatedUser);
 
     UserDto getUserById(long userId);
 
