@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+//@Transactional
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemService itemService;
