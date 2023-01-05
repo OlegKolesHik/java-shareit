@@ -13,10 +13,10 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 @RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingService bookingService;
@@ -37,7 +37,7 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     public BookingReturnDto getBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId) {
-        log.info("Get-запрос на получение бронирования. id бронирования {}, id пользователя {}", bookingId, userId);
+        log.info("Get-запрос на получение бронирования. id бронирования {}, id ползователя {}", bookingId, userId);
         return bookingService.getBooking(bookingId, userId);
     }
 
@@ -48,7 +48,7 @@ public class BookingController {
                                                           Integer from,
                                                   @Positive @RequestParam(name = "size", defaultValue = "10")
                                                           Integer size) {
-        log.info("Get-запрос на получение списка бронирований пользователя с id {} и статусом {}", userId, state);
+        log.info("Get-запрос на получение чпичка бронирований пользователя с id {} и статусом {}", userId, state);
         return bookingService.getUserBookingList(userId, state, from, size);
     }
 
@@ -59,8 +59,7 @@ public class BookingController {
                                                            Integer from,
                                                    @Positive @RequestParam(name = "size", defaultValue = "10")
                                                            Integer size) {
-        log.info("Get-запрос на получение списка бронирований пользователя с id {} и статусом {}", userId, state);
+        log.info("Get-запрос на получение чпичка бронирований пользователя с id {} и статусом {}", userId, state);
         return bookingService.getOwnerBookingList(userId, state, from, size);
     }
-
 }
