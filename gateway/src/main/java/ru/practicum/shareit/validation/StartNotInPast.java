@@ -1,4 +1,4 @@
-package main.java.ru.practicum.shareit.validation;
+package ru.practicum.shareit.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

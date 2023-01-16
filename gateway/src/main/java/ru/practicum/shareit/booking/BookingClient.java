@@ -1,4 +1,4 @@
-package main.java.ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

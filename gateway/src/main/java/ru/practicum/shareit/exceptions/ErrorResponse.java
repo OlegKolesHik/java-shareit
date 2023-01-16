@@ -1,4 +1,4 @@
-package main.java.ru.practicum.shareit.exceptions;
+package ru.practicum.shareit.exceptions;
 
 public class ErrorResponse {
     private final String error;

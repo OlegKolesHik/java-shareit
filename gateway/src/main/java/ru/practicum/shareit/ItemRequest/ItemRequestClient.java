@@ -1,4 +1,4 @@
-package main.java.ru.practicum.shareit.ItemRequest;
+package ru.practicum.shareit.ItemRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package main.java.ru.practicum.shareit.ItemRequest.dto;
+package ru.practicum.shareit.ItemRequest.dto;
 
 import lombok.Data;
 import ru.practicum.shareit.item.dto.ItemDto;

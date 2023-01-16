@@ -1,4 +1,4 @@
-package main.java.ru.practicum.shareit.user.dto;
+package ru.practicum.shareit.user.dto;
 
 import lombok.Data;
 import ru.practicum.shareit.Create;
